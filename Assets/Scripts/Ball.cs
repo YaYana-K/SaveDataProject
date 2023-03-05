@@ -6,10 +6,12 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     private Rigidbody m_Rigidbody;
+    int speed = 5;
 
     void Start()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
+        m_Rigidbody.AddForce(Vector3.up * speed);
     }
     
     private void OnCollisionExit(Collision other)

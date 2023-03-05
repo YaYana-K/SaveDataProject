@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Web;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -8,13 +9,18 @@ public class MainManager : MonoBehaviour
 {
     public Brick BrickPrefab;
     public int LineCount = 6;
+    [HideInInspector]public static int BestPoint;
     public Rigidbody Ball;
+    [HideInInspector] public static string BestUser;
+    
 
     public Text ScoreText;
+    public Text BestScoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
     private int m_Points;
+
     
     private bool m_GameOver = false;
 
@@ -22,6 +28,10 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        string LastBestUser = PlayerPrefs.GetString("BestUser", "");
+        BestPoint = PlayerPrefs.GetInt("BestPoint", BestPoint);
+        BestScoreText.text = "Best score: " + LastBestUser + " : "+ BestPoint;
+
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -70,6 +80,13 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
+        if(m_Points > BestPoint)
+        {
+            BestPoint = m_Points;
+            PlayerPrefs.SetInt("BestPoint", BestPoint);     // зберігаємо новий рекорд в файл
+            BestUser = MainMenu.userName;
+            PlayerPrefs.SetString("BestUser", BestUser);
+        }
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
